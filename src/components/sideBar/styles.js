@@ -14,18 +14,42 @@ const styles = StyleSheet.create({
   },
   container: {
     flex: 1,
-    backgroundColor: '#0d4364',
+    backgroundColor: '#fff',
+  },
+  avatarContainer: {
+    flex: 1,
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'center',
+    padding: 20,
+    height: 200,
+    backgroundColor: '#0187ed',
+    shadowColor: '#000000',
+    shadowOpacity: 1,
+    shadowRadius: 2,
+    shadowOffset: {
+      height: 2,
+      width: 2,
+    },
+  },
+  avatar: {
+    flex: 1,
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
+  avatarText: {
+    marginTop: 15,
+    color: '#fff',
+    fontWeight: 'bold',
   },
   link: {
-    color: '#fff',
+    color: '#000',
     fontSize: 16,
   },
   linkWrapper: {
     flexDirection: 'row',
     marginVertical: 10,
-    paddingLeft: 25,
     paddingVertical: 14,
-    borderBottomWidth: 0,
   },
   versionContainer: {
     width: null,
@@ -38,6 +62,9 @@ const styles = StyleSheet.create({
     alignSelf: 'center',
     paddingRight: 10,
   },
+  paymentIcon: {
+    fontSize: 30,
+  }
 });
 
 export default styles;

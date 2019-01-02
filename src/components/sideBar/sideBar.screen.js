@@ -1,51 +1,62 @@
 import * as React from 'react';
-import { Container, Content, List, ListItem, Text } from 'native-base';
-import { Navigation } from 'react-native-navigation';
+import {
+  Container,
+  Content,
+  List,
+  ListItem,
+  Text,
+  Thumbnail,
+  Left,
+  Body,
+  Button,
+  Icon,
+} from 'native-base';
 
 import { View } from 'react-native';
 import PropTypes from 'prop-types';
 import styles from './styles';
 import Config from './../../services/config';
 
+const userIconUri = require('../../../assets/images/user-icon-small.png');
+
 const routes = [
+  {
+    route: 'Home',
+    caption: 'Home',
+    iconName: 'md-home',
+  },
   {
     route: 'Profile',
     caption: 'Profile',
+    iconName: 'md-person',
   },
   {
     route: '',
     caption: 'Logout',
+    iconName: 'md-log-out',
   },
 ];
 
 class SideBar extends React.Component {
   static propTypes = {
     onLogout: PropTypes.func,
+    navigation: PropTypes.object,
+    user: PropTypes.object,
   };
 
-  async goTo(route, caption, logout) {
-    const { onLogout } = this.props;
+  goTo(route, caption, logout) {
+    const { onLogout, navigation } = this.props;
+    this.toggle();
     if (logout) {
-      await onLogout({ stackComponentId: 'AppRoot' });
+      onLogout();
     } else {
-      Navigation.push('AppRoot', {
-        component: {
-          name: `${Config.urlPrefix}.${route}`,
-        },
-      });
+      navigation.navigate(route);
     }
-
-    this.toggle('SideBar');
   }
 
-  toggle = componentId => {
-    Navigation.mergeOptions(componentId, {
-      sideMenu: {
-        left: {
-          visible: false,
-        },
-      },
-    });
+  toggle = () => {
+    const { navigation } = this.props;
+    navigation.closeDrawer();
   };
 
   isLogout(caption) {
@@ -53,23 +64,41 @@ class SideBar extends React.Component {
   }
 
   render() {
-    const { container, linkWrapper, activeLink, versionContainer, versionText } = styles;
-    let visibleScreenInstanceId = '';
+    const {
+      container,
+      linkWrapper,
+      versionContainer,
+      versionText,
+      avatar,
+      avatarContainer,
+      avatarText,
+    } = styles;
     return (
       <Container>
         <Content style={container}>
+          <View style={avatarContainer} elevation={5}>
+            <View style={avatar}>
+              <Thumbnail large source={userIconUri} />
+              <Text style={avatarText}>Hello, user!</Text>
+            </View>
+          </View>
           <List
             dataArray={routes}
             renderRow={route => (
               <ListItem
-                style={[
-                  linkWrapper,
-                  visibleScreenInstanceId === 'profileStack' ? activeLink : undefined,
-                ]}
+                icon
+                style={[linkWrapper]}
                 onPress={() => {
                   this.goTo(route.route, route.caption, this.isLogout(route.caption));
                 }}>
-                <Text style={{ color: '#fff' }}>{route.caption}</Text>
+                <Left>
+                  <Button style={{ backgroundColor: '#0187ed' }}>
+                    <Icon name={route.iconName} />
+                  </Button>
+                </Left>
+                <Body>
+                  <Text>{route.caption}</Text>
+                </Body>
               </ListItem>
             )}
           />

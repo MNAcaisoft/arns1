@@ -14,16 +14,27 @@ class Login extends React.Component {
 
   render() {
     const { onLogin, loginForm, loading } = this.props;
-    const { logoContainer, formContainer, loginButtonContainer, loginButton } = styles;
+    const {
+      formContainer,
+      loginButtonContainer,
+      loginButton,
+      centeredContainer,
+      loginFieldsContainer,
+      loginLogoContainer,
+    } = styles;
     return (
       <Container>
-        <Content>
-          <View style={logoContainer} />
-          <View style={formContainer}>{loginForm}</View>
-          <View style={loginButtonContainer}>
-            <Button onPress={onLogin} style={loginButton}>
-              {loading ? <Spinner color="white" /> : <Text>LOGIN</Text>}
-            </Button>
+        <Content contentContainerStyle={{ flex: 1 }}>
+          <View style={centeredContainer}>
+            <View style={formContainer}>
+              <View style={loginLogoContainer} />
+              <View style={loginFieldsContainer}>{loginForm}</View>
+              <View style={loginButtonContainer}>
+                <Button onPress={onLogin} style={loginButton} rounded block>
+                  {loading ? <Spinner color="white" /> : <Text>LOGIN</Text>}
+                </Button>
+              </View>
+            </View>
           </View>
         </Content>
       </Container>
