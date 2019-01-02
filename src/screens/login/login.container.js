@@ -1,10 +1,27 @@
 import React from 'react';
 import { connect } from 'react-redux';
 import PropTypes from 'prop-types';
-import { Navigation } from 'react-native-navigation';
+import _ from 'lodash';
 import Login from './login.screen';
 
+import { showToast } from '../../services/toast';
+
 const t = require('tcomb-form-native');
+const stylesheet = _.cloneDeep(t.form.Form.stylesheet);
+
+stylesheet.textbox.normal.borderWidth = 0;
+stylesheet.textbox.error.borderWidth = 0;
+stylesheet.textbox.normal.marginBottom = 0;
+stylesheet.textbox.error.marginBottom = 0;
+
+stylesheet.textboxView.normal.borderWidth = 0;
+stylesheet.textboxView.error.borderWidth = 0;
+stylesheet.textboxView.normal.borderRadius = 0;
+stylesheet.textboxView.error.borderRadius = 0;
+stylesheet.textboxView.normal.borderBottomWidth = 1;
+stylesheet.textboxView.error.borderBottomWidth = 1;
+stylesheet.textboxView.normal.marginBottom = 5;
+stylesheet.textboxView.error.marginBottom = 5;
 
 const Form = t.form.Form;
 
@@ -14,6 +31,7 @@ const LoginForm = t.struct({
 });
 
 const options = {
+  stylesheet,
   fields: {
     password: {
       placeholder: 'Provide password',
@@ -33,31 +51,30 @@ class LoginContainer extends React.Component {
   static contextTypes = {
     store: PropTypes.object,
   };
+  static navigationOptions = {
+    header: null,
+  };
 
   constructor(props, state) {
     super(props, state);
-    Navigation.events().bindComponent(this);
-    // Navigation.mergeOptions(props.componentId, {
-    //   sideMenu: {
-    //     visible: false,
-    //   },
-    // });
     this.state = {
-      email: null,
+      login: null,
       password: null,
     };
   }
 
   handleLogin = async () => {
-    const { login, componentId } = this.props;
+    const { login } = this.props;
     const formValue = this.form.getValue();
     if (formValue) {
+      console.log(formValue);
       this.setState({ values: formValue });
       try {
-        await login({ data: formValue, componentId });
+        await login({ data: formValue });
       } catch (err) {
-        if (err.status === 400) {
-          console.log('wrong credentials');
+        console.log(err);
+        if (err.status === 401) {
+          showToast('error', err.data.error);
         }
       }
     }

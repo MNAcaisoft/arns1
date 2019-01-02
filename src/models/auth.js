@@ -1,7 +1,7 @@
 import { AsyncStorage } from 'react-native';
-import { Navigation } from 'react-native-navigation';
 import Http, { setAuthHeader, removeAuthHeader } from '../services/http';
 import Config from '../services/config';
+import NavigationService from '../services/navigation';
 
 const auth = {
   effects: dispatch => ({
@@ -17,6 +17,7 @@ const auth = {
       try {
         const token = await AsyncStorage.getItem(`@${Config.urlPrefix}:token`);
         if (token !== null) {
+          setAuthHeader(token);
           this.setToken(token);
         }
         return token;
@@ -24,39 +25,34 @@ const auth = {
         console.log('Something went wrong!');
       }
     },
-    async login({ data }) {
-      // credentials to ibf.space ->  test@ibf.space/Test123*
+    async storeUser(user) {
+      this.setUser(user);
       try {
-        const response = await Http.post('/auth/login/', data);
+        await AsyncStorage.setItem(`@${Config.urlPrefix}:user`, JSON.stringify(user));
+      } catch (error) {
+        console.log('Something went wrong!');
+      }
+    },
+    async getUser() {
+      try {
+        const user = await AsyncStorage.getItem(`@${Config.urlPrefix}:user`);
+        if (user !== null) {
+          this.setUser(JSON.parse(user));
+        }
+        return user;
+      } catch (error) {
+        console.log('Something went wrong!');
+      }
+    },
+    async login({ data }) {
+      try {
+        const response = await Http.post('/auth/login/', {
+          email: data.email.toLowerCase(),
+          password: data.password,
+        });
         await this.storeToken(response.data.token);
         setAuthHeader(response.data.token);
-        this.setUser(response.data.user);
-        Navigation.setRoot({
-          root: {
-            sideMenu: {
-              id: 'sideMenu',
-              left: {
-                component: {
-                  id: 'SideBar',
-                  name: `${Config.urlPrefix}.SideBar`,
-                },
-              },
-              center: {
-                stack: {
-                  id: 'AppRoot',
-                  children: [
-                    {
-                      component: {
-                        id: 'Home',
-                        name: `${Config.urlPrefix}.Home`,
-                      },
-                    },
-                  ],
-                },
-              },
-            },
-          },
-        });
+        NavigationService.navigate('Home');
         return response;
       } catch (err) {
         throw err.response;
@@ -67,45 +63,7 @@ const auth = {
         await AsyncStorage.removeItem(`@${Config.urlPrefix}:token`);
         this.setToken(null);
         removeAuthHeader();
-        Navigation.setRoot({
-          root: {
-            sideMenu: {
-              id: 'sideMenu',
-              left: {
-                component: {
-                  id: 'Drawer',
-                  name: `${Config.urlPrefix}.SideBar`,
-                },
-                visible: false,
-                enabled: false,
-              },
-              center: {
-                stack: {
-                  id: 'AppRoot',
-                  children: [
-                    {
-                      component: {
-                        id: 'Login',
-                        name: `${Config.urlPrefix}.Login`,
-                        options: {
-                          sideMenu: {
-                            left: {
-                              component: {
-                                name: 'sideMenu',
-                              },
-                              visible: false,
-                              enabled: false,
-                            },
-                          },
-                        },
-                      },
-                    },
-                  ],
-                },
-              },
-            },
-          },
-        });
+        NavigationService.navigate('Login');
       } catch (error) {
         console.log('Something went wrong!');
       }
