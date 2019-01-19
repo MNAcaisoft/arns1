@@ -1,8 +1,11 @@
-import { StyleSheet } from 'react-native';
+import { StyleSheet, Platform } from 'react-native';
+
+const platform = Platform.OS;
 
 const styles = StyleSheet.create({
   topBar: {
     backgroundColor: '#0187ed',
+    paddingBottom: platform === 'ios' ? 10 : 0,
   },
   topBarLeft: {
     flex: 1,

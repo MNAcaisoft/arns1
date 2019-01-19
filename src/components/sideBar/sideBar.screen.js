@@ -24,16 +24,19 @@ const routes = [
     route: 'Home',
     caption: 'Home',
     iconName: 'md-home',
+    iconType: 'Ionicons',
   },
   {
     route: 'Profile',
-    caption: 'Profile',
-    iconName: 'md-person',
+    caption: 'Settings',
+    iconName: 'ios-settings',
+    iconType: 'Ionicons',
   },
   {
     route: '',
     caption: 'Logout',
     iconName: 'md-log-out',
+    iconType: 'Ionicons',
   },
 ];
 
@@ -93,7 +96,7 @@ class SideBar extends React.Component {
                 }}>
                 <Left>
                   <Button style={{ backgroundColor: '#0187ed' }}>
-                    <Icon name={route.iconName} />
+                    <Icon name={route.iconName} type={route.iconType} />
                   </Button>
                 </Left>
                 <Body>

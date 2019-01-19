@@ -15,9 +15,7 @@ const styles = StyleSheet.create({
     paddingRight: 35,
   },
   loginButton: {
-    alignSelf: 'center',
     backgroundColor: '#0187ed',
-    alignItems: 'stretch',
   },
   loginFieldsContainer: {
     paddingBottom: 60,
